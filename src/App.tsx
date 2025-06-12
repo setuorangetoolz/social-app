@@ -1,12 +1,8 @@
-import './App.css'
+import "./App.css";
+import SocialPostDashboard from "./components/socialPosts/SocialPostDashboard";
 
 function App() {
-
-  return (
-    <>
-      
-    </>
-  )
+  return <SocialPostDashboard />;
 }
 
-export default App
+export default App;
