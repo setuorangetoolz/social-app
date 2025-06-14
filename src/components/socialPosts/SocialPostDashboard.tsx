@@ -1,25 +1,49 @@
 import { Button, Divider, Paper, Stack, Tab, Tabs } from "@mui/material";
 import React from "react";
+import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
+import { type Post, type POST_ON } from "../../helper/SocialPostConstant";
 import CreateSocialPost from "./createList/CreateSocialPost";
 import SocialList from "./postList/SocialList";
-import { FormProvider, useForm, type SubmitHandler } from "react-hook-form";
-import type { Post } from "../../helper/SocialPostConstant";
 
-const FormContext = React.createContext<SubmitHandler<Post> | null>(
-  null
-);
+// const FormContext = React.createContext<SubmitHandler<Post> | null>(null);
 
 const SocialPostDashboard = () => {
-  const [value, setValue] = React.useState(1);
-  const methods = useForm<Post>();
+  const [tab, setTab] = React.useState(1);
+  const methods = useForm<{ posts: Post[] }>({
+    defaultValues:{
+      posts:[]
+    }
+  });
+  const { setValue, watch } = methods;
+  const posts = watch("posts");
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+  const handleChange = (event: React.SyntheticEvent, newTab: number) => {
+    setTab(newTab);
   };
-  const onSubmit: SubmitHandler<Post> = (data) => console.log(data);
+  const handlePlatformClick = (platformType: POST_ON) => {
+    const existingPost = posts.find((post) => post.type === platformType);
+    if (existingPost) {
+      setValue(
+        "posts",
+        posts.filter((post) => post.type !== platformType)
+      );
+    } else {
+      setValue("posts", [
+        ...posts,
+        {
+          type: platformType,
+          author: "",
+          content: "",
+          post_on: platformType,
+          post_id: "",
+        },
+      ]);
+    }
+  };
+  const onSubmit: SubmitHandler<{posts : Post[]}> = (data) => console.log(data);
 
   return (
-    <FormContext.Provider value={onSubmit}>
+    // <FormContext.Provider value={onSubmit}>
       <FormProvider {...methods}>
         <Paper variant="outlined" sx={{ height: "100vh" }}>
           <Stack
@@ -29,7 +53,7 @@ const SocialPostDashboard = () => {
             pr={2}
           >
             <Tabs
-              value={value}
+              value={tab}
               onChange={handleChange}
               aria-label="basic tabs example"
             >
@@ -46,11 +70,16 @@ const SocialPostDashboard = () => {
           </Stack>
 
           <Divider />
-          {value === 1 && <CreateSocialPost />}
-          {value === 2 && <SocialList />}
+          {tab === 1 && (
+            <CreateSocialPost
+              posts={posts}
+              onPlatformClick={handlePlatformClick}
+            />
+          )}
+          {tab === 2 && <SocialList />}
         </Paper>
       </FormProvider>
-    </FormContext.Provider>
+    // </FormContext.Provider>
   );
 };
 

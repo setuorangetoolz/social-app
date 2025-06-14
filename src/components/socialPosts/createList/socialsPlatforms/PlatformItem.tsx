@@ -1,24 +1,16 @@
 import {
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    styled,
-    Tooltip,
-    useMediaQuery,
-    useTheme,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  styled,
+  Tooltip,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import React from "react";
-import type { POST_ON } from "../../../../helper/SocialPostConstant";
-
-interface PlatformItemProps {
-  name: string;
-  icon: React.ReactNode;
-  platformType: POST_ON;
-  disabled?: boolean;
-  activePlatform: string;
-  onClickPlatform: (platformType: POST_ON) => void;
-}
+import type { Post, POST_ON } from "../../../../helper/SocialPostConstant";
+import { useFormContext } from "react-hook-form";
 
 const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   padding: "8px 12px",
@@ -47,22 +39,34 @@ const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   },
 }));
 
+interface PlatformItemProps {
+  name: string;
+  icon: React.ReactNode;
+  platformType: POST_ON;
+  disabled?: boolean;
+  activePlatform: string[];
+  onPlatformClick: (platformType: POST_ON) => void;
+}
+
 const PlatformItem = ({
   name,
   icon,
   platformType,
   activePlatform,
-  onClickPlatform,
+  onPlatformClick,
 }: PlatformItemProps) => {
+  const {
+    formState: { errors },
+  } = useFormContext<Post>();
   const theme = useTheme();
   const isLgDown = useMediaQuery(theme.breakpoints.down("lg"));
 
-  const hasError = false;
+  const hasError = !!errors.post_on;
 
   const buttonClassName = [
     hasError && "selected-channel-error",
-    platformType === activePlatform && "selected-channel",
-    hasError && platformType === activePlatform && "error",
+    activePlatform.includes(platformType) && "selected-channel",
+    hasError && activePlatform.includes(platformType) && "error",
   ]
     .filter(Boolean)
     .join(" ");
@@ -71,7 +75,7 @@ const PlatformItem = ({
     <ListItem disablePadding sx={{ mb: 1.5 }}>
       <StyledListItemButton
         className={buttonClassName}
-        onClick={() => onClickPlatform(platformType)}
+        onClick={() => onPlatformClick(platformType)}
       >
         {icon &&
           (isLgDown ? (

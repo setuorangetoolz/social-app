@@ -1,8 +1,9 @@
 import { Facebook, Instagram } from "@mui/icons-material";
 import { List, Stack, Typography } from "@mui/material";
 import {
-    POST_ON_CONSTANT,
-    type POST_ON,
+  POST_ON_CONSTANT,
+  type Post,
+  type POST_ON,
 } from "../../../../helper/SocialPostConstant";
 import PlatformItem from "./PlatformItem";
 
@@ -20,14 +21,15 @@ const platforms = [
 ];
 
 interface SocialPlatformProps {
-  activePlatform: string;
-  onClickPlatform: (platformType: POST_ON) => void;
+  posts: Post[];
+  onPlatformClick: (platformType: POST_ON) => void;
 }
 
 const SocialPlatforms = ({
-  activePlatform,
-  onClickPlatform,
+  posts = [],
+  onPlatformClick,
 }: SocialPlatformProps) => {
+  const activePlatform = posts?.map((post) => post.type);
   return (
     <Stack p={2} sx={{ height: "100%" }}>
       <Typography
@@ -51,7 +53,7 @@ const SocialPlatforms = ({
           <PlatformItem
             //   disabled={isEditMode}
             activePlatform={activePlatform}
-            onClickPlatform={onClickPlatform}
+            onPlatformClick={onPlatformClick}
             key={platform.name}
             platformType={platform.type}
             name={platform.name}

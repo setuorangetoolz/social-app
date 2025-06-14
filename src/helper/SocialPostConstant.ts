@@ -13,7 +13,7 @@ export interface Post {
   media_urls?: string[];
   post_id: string | null;
   post_on: string;
-//   type: string;
+  type: string;
 //   uid: string;
 //   created_at: string;
 //   updated_at: string;
