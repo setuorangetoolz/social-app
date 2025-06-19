@@ -1,4 +1,5 @@
 import {
+  Checkbox,
   ListItem,
   ListItemButton,
   ListItemIcon,
@@ -9,8 +10,8 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import type { Post, POST_ON } from "../../../../helper/SocialPostConstant";
 import { useFormContext } from "react-hook-form";
+import type { Post, POST_ON } from "../../../../helper/SocialPostConstant";
 
 const StyledListItemButton = styled(ListItemButton)(({ theme }) => ({
   padding: "8px 12px",
@@ -43,17 +44,21 @@ interface PlatformItemProps {
   name: string;
   icon: React.ReactNode;
   platformType: POST_ON;
+  activePlatform: POST_ON;
   disabled?: boolean;
-  activePlatform: string[];
+  selectedPlatforms: string[];
   onPlatformClick: (platformType: POST_ON) => void;
+  handleActivePlatform: () => void;
 }
 
 const PlatformItem = ({
   name,
   icon,
   platformType,
-  activePlatform,
+  selectedPlatforms,
   onPlatformClick,
+  handleActivePlatform,
+  activePlatform,
 }: PlatformItemProps) => {
   const {
     formState: { errors },
@@ -65,17 +70,23 @@ const PlatformItem = ({
 
   const buttonClassName = [
     hasError && "selected-channel-error",
-    activePlatform.includes(platformType) && "selected-channel",
-    hasError && activePlatform.includes(platformType) && "error",
+    activePlatform === platformType && "selected-channel",
+    hasError && activePlatform === platformType && "error",
   ]
     .filter(Boolean)
     .join(" ");
 
   return (
     <ListItem disablePadding sx={{ mb: 1.5 }}>
+      <ListItemIcon sx={{ mr: 1, minWidth: "auto" }}>
+        <Checkbox
+          checked={selectedPlatforms.includes(platformType)}
+          onChange={() => onPlatformClick(platformType)}
+        />
+      </ListItemIcon>
       <StyledListItemButton
         className={buttonClassName}
-        onClick={() => onPlatformClick(platformType)}
+        onClick={handleActivePlatform}
       >
         {icon &&
           (isLgDown ? (

@@ -23,13 +23,20 @@ const platforms = [
 interface SocialPlatformProps {
   posts: Post[];
   onPlatformClick: (platformType: POST_ON) => void;
+  handleActivePlatform: (platform: POST_ON) => void;
+  activePlatform: POST_ON;
 }
 
 const SocialPlatforms = ({
   posts = [],
   onPlatformClick,
+  handleActivePlatform,
+  activePlatform,
 }: SocialPlatformProps) => {
-  const activePlatform = posts?.map((post) => post.type);
+  const selectedPlatforms = posts?.map((post) => post.type);
+
+  console.log("selectedPlatforms",selectedPlatforms);
+
   return (
     <Stack p={2} sx={{ height: "100%" }}>
       <Typography
@@ -52,6 +59,8 @@ const SocialPlatforms = ({
         {platforms.map((platform) => (
           <PlatformItem
             //   disabled={isEditMode}
+            handleActivePlatform={() => handleActivePlatform(platform.type)}
+            selectedPlatforms={selectedPlatforms}
             activePlatform={activePlatform}
             onPlatformClick={onPlatformClick}
             key={platform.name}

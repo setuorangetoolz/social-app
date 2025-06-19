@@ -55,7 +55,6 @@ const SocialPostDashboard = () => {
             <Tabs
               value={tab}
               onChange={handleChange}
-              aria-label="basic tabs example"
             >
               <Tab label="Create" value={1} />
               <Tab label="View" value={2} />
